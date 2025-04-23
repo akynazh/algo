@@ -1,0 +1,7 @@
+.idea
+*.iml
+*.exe
+*.class
+.DS_Store
+.vscode
+out
