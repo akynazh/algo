@@ -16,10 +16,31 @@ class Solution:
     def countNodes(self, root: Optional[TreeNode]) -> int:
         if not root:
             return 0
-        h = 0
-        while root:
-            h += 1
-            root = root.left
+        # import queue
+
+        # q = queue.Queue()
+        # q.put(root)
+        # c = 0
+        # while not q.empty():
+        #     x = q.get()
+        #     c += 1
+        #     if x.left:
+        #         q.put(x.left)
+        #     if x.right:
+        #         q.put(x.right)
+        # return c
+        xl, xr = 0, 0
+        t = root
+        while t:
+            xl += 1
+            t = t.left
+        t = root
+        while t:
+            xr += 1
+            t = t.right
+        if xl == xr:
+            return 2**xl - 1
+        return 1 + self.countNodes(root.left) + self.countNodes(root.right)
 
 
 # @lc code=end
