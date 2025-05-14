@@ -1,5 +1,7 @@
 // 迪杰斯特拉算法 O(V^2)
-#include <bits/stdc++.h>
+#include <iostream>
+#include <cstring>
+#include <climits>
 using namespace std;
 const int MAXN = 100;
 const int INF = 0x3f3f3f3f;
@@ -30,7 +32,7 @@ void Dijkstra(int s) {
     // 无负边时最多更新n-1(其他结点数)次
     for (int i = 0; i < V - 1; i++) {
         min_cost = INF;
-        // 寻找最未被访问的且权值最小的路径，需要优化的地方
+        // 寻找未被访问的且权值最小的路径，需要优化的地方
         for (int j = 0; j < V; j++) {
             if (!visited[j] && d[j] < min_cost) {
                 k = j;
