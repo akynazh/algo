@@ -38,7 +38,7 @@ void Bellman_Ford(int s)
 		// 如果没出现更新则退出
 		if (!flag) break;
 		c++;
-		if (c >= V) {
+		if (c >= V) { // 松弛操作最多执行 n-1 次
 			cout << "有负环" << endl;
 			break;
 		}
@@ -96,7 +96,3 @@ int main() {
 
 0 2 4 -2 4 -3
 */
-
-
-
-
