@@ -1,7 +1,6 @@
 ---
 title: 图的着色问题汇总
 date: 2020-12-05T12:34:05+08:00
-categories: [CS]
 tags: [algorithm, graph]
 slug: summary-of-coloring-problems-of-graphs
 ---

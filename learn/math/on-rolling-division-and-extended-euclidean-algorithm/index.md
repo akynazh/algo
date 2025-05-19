@@ -1,7 +1,6 @@
 ---
 title: 关于辗转相除法和扩展欧几里得算法
 date: 2020-07-21T20:48:53+08:00
-categories: [CS]
 tags: [algorithm, math]
 mathjax: true
 slug: on-rolling-division-and-extended-euclidean-algorithm

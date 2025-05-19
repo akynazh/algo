@@ -1,7 +1,6 @@
 ---
 title: 理解快速幂运算并进行应用
 date: 2022-07-21T20:44:54+08:00
-categories: [CS]
 tags: [algorithm, math]
 mathjax: true
 slug: understand-and-apply-fast-power-operation

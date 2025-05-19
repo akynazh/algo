@@ -1,7 +1,6 @@
 ---
 title: 矩阵快速幂的介绍及其应用
 date: 2020-11-18T23:47:15+08:00
-categories: [CS]
 tags: [algorithm]
 slug: introduction-and-application-of-matrix-fast-power
 ---

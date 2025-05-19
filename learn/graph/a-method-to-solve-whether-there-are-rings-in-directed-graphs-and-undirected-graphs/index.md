@@ -1,7 +1,6 @@
 ---
 title: 求解有向图和无向图中是否存在环的方法
 date: 2020-12-02T23:50:44+08:00
-categories: [CS]
 tags: [algorithm, graph]
 slug: a-method-to-solve-whether-there-are-rings-in-directed-graphs-and-undirected-graphs
 ---
