@@ -2,7 +2,6 @@
 title: 有关素数的一些算法
 date: 2020-07-21T20:43:04+08:00
 tags: [algorithm, math]
-mathjax: true
 slug: some-algorithms-about-prime-numbers
 ---
 
