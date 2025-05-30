@@ -1,10 +1,3 @@
----
-title: 关于辗转相除法和扩展欧几里得算法
-date: 2020-07-21T20:48:53+08:00
-tags: [algorithm, math]
-slug: on-rolling-division-and-extended-euclidean-algorithm
----
-
 ## gcd 辗转相除法求最大公约数
 
 思路：反复交换取余，直到小的数为 0。
