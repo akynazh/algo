@@ -5,7 +5,7 @@ class Edge:
         self.w = w
 
 
-INF = 0x3F3F3F3F
+INF = float("inf")
 edge = []
 
 

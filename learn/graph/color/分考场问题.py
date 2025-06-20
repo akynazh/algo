@@ -6,7 +6,7 @@ def solve(v, c, cm, n, rooms, graph):
         return
     # 尝试将 v 分配到 i 号教室
     for i in range(1, c + 1):
-        if 1 in [graph[i][k] for k in rooms[i]]:
+        if 1 in [graph[v][k] for k in rooms[i]]:
             continue
         rooms[i].append(v)
         solve(v + 1, c, cm, n, rooms, graph)
