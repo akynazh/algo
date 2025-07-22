@@ -95,12 +95,16 @@ class Main
         TC = Integer.parseInt(st.nextToken());
         MARK = Integer.parseInt(st.nextToken());
 
+        long s = System.currentTimeMillis();
         for (int testcase = 1; testcase <= TC; ++testcase)
         {
+            long a = System.currentTimeMillis();
             int score = run(br) ? MARK : 0;
+            long b = System.currentTimeMillis();
 
-            System.out.println("#" + testcase + " " + score);
+            System.out.println("#" + testcase + " " + score + " " + (b - a));
         }
+        System.out.println(System.currentTimeMillis() - s);
 
         br.close();
     }

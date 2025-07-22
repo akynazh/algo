@@ -73,15 +73,13 @@ public class Main {
         int T = Integer.parseInt(line.nextToken());
         int MARK = Integer.parseInt(line.nextToken());
 
-        long k = 0;
+        long s = System.currentTimeMillis();
+        System.out.println(s);
         for (int tc = 1; tc <= T; tc++) {
-            long s = System.currentTimeMillis();
             int score = run(br) ? MARK : 0;
-            long e = System.currentTimeMillis();
-            System.out.println("#" + tc + " " + score + "  " + (e - s));
-            k += e - s;
+            System.out.println("#" + tc + " " + score);
         }
-        System.out.println(k);
+        System.out.println(System.currentTimeMillis() - s);
 
         br.close();
     }

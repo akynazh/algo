@@ -60,16 +60,20 @@ class Main {
         int T = Integer.parseInt(line.nextToken());
         int MARK = Integer.parseInt(line.nextToken());
 
+        long s = System.currentTimeMillis();
         for (int tc = 1; tc <= T; tc++) {
+            long a = System.currentTimeMillis();
             int score = run(br) ? MARK : 0;
-            System.out.println("#" + tc + " " + score);
+            long b = System.currentTimeMillis();
+            System.out.println("#" + tc + " " + score + " " + (b - a));
         }
+        System.out.println(System.currentTimeMillis() - s);
 
         br.close();
     }
 }
 
-class UserSolution1 {
+class UserSolution {
     int musicTime;
     Map<Integer, Integer[]> emps;
     TreeMap<Integer, Set<Integer>> startMap;
@@ -172,7 +176,7 @@ class SegmentTree {
     }
 }
 
-class UserSolution {
+class UserSolution1 {
     private SegmentTree seg;
     private Map<Integer, int[]> emps;
     private int musicTime;
