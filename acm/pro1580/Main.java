@@ -160,8 +160,9 @@ class UserSolution {
 
             // end
             if (curr.node == mEndSpot && curr.time <= mMaxTime && (!curr.hasBike || hasShop[curr.node])) {
-                ans = Math.min(ans, curr.cost);
-                continue;
+                return curr.cost;
+//                ans = Math.min(ans, curr.cost);
+//                continue;
             }
 
             // go
@@ -205,6 +206,6 @@ class UserSolution {
             }
         }
 
-        return ans == Integer.MAX_VALUE ? -1 : ans;
+        return -1;
     }
 }
