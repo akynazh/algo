@@ -1,4 +1,4 @@
-package pro1462c;
+package pro167c;
 
 import java.util.*;
 
@@ -54,28 +54,23 @@ class Solution {
         T = sc.nextInt();
         MARK = sc.nextInt();
 
+        long s = System.currentTimeMillis();
         for (int tc = 1; tc <= T; tc++) {
-            long s = System.currentTimeMillis();
+            long a = System.currentTimeMillis();
             int score = run(sc) ? MARK : 0;
-            long e = System.currentTimeMillis();
-            System.out.println("#" + tc + " " + score + " " + (e - s));
+            long b = System.currentTimeMillis();
+            System.out.println("#" + tc + " " + score + " " + (b - a));
         }
+        System.out.println(System.currentTimeMillis() - s);
         sc.close();
     }
 }
 
 class UserSolution {
-    final int MAX_L = 500;
-    final int MAX_N = MAX_L * 30;
-    final int MAX_QUANTITY = 100;
-    int L;
-    int N;
+    int L, N, blockSize;
     Map<Integer, Camp> camps; // campId - camp
     Map<Integer, Box> boxes; // campId(parentId) - box
-    int blockSize;
     Map<String, Set<Integer>> blockMap;
-
-//    int[][] island; // 0 <= i < N
 
     static class Camp implements Comparable<Camp> {
         int id;
@@ -134,16 +129,11 @@ class UserSolution {
         this.N = N;
         this.camps = new HashMap<>();
         this.boxes = new HashMap<>();
-        this.blockSize = L + 1;
+        this.blockSize = L;
         this.blockMap = new HashMap<>();
-
-//        this.island = new int[MAX_N][MAX_N];
     }
 
     String getBlockKey(int row, int col) {
-//        long br = row / blockSize;
-//        long bc = col / blockSize;
-//        return (br << 32) | bc;
         return String.valueOf(row) + col;
     }
 
@@ -151,30 +141,16 @@ class UserSolution {
         Camp newCamp = new Camp(mID, mRow, mCol, mQuantity);
         camps.put(mID, newCamp);
         Set<Integer> campParentIds = new HashSet<>();
-//        island[mRow][mCol] = mID;
-
-//        for (int i = -L; i <= L; i++) {
-//            for (int j = -L; j <= L; j++) {
-//                if (Math.abs(i) + Math.abs(j) > L || (i == 0 && j == 0)) {
-//                    continue;
-//                }
-//                int row = mRow + i, col = mCol + j;
-//                if (0 <= row && row < N && 0 <= col && col < N && island[row][col] != 0) {
-//                    campParentIds.add(find(island[row][col]));
-//                }
-//            }
-//        }
-
-        int minBlockRow = (mRow - L) / blockSize;
-        int maxBlockRow = (mRow + L) / blockSize;
-        int minBlockCol = (mCol - L) / blockSize;
-        int maxBlockCol = (mCol + L) / blockSize;
+        int minBlockRow = mRow - L < 0 ? 0 : (mRow - L) / blockSize;
+        int maxBlockRow = mRow + L > N ? (N - 1) / blockSize : (mRow + L) / blockSize;
+        int minBlockCol = mCol - L < 0 ? 0 : (mCol - L) / blockSize;
+        int maxBlockCol = mCol + L > N ? (N - 1) / blockSize : (mCol + L) / blockSize;
 
         for (int br = minBlockRow; br <= maxBlockRow; br++) {
             for (int bc = minBlockCol; bc <= maxBlockCol; bc++) {
                 String bKey = getBlockKey(br, bc);
+                if (!blockMap.containsKey(bKey)) continue;
                 Set<Integer> nearby = blockMap.get(bKey);
-                if (nearby == null) continue;
                 for (int nearID : nearby) {
                     Camp other = camps.get(nearID);
                     int dist = Math.abs(other.row - mRow) + Math.abs(other.col - mCol);
@@ -226,5 +202,114 @@ class UserSolution {
             }
         }
         return bestCamp == null ? -1 : bestCamp.id;
+    }
+}
+
+class UserSolutionBetter {
+
+    class BaseCamp implements Comparable<BaseCamp> {
+        int id;
+        int row;
+        int col;
+        int quantity;
+        int total_quantity;
+        BaseCamp root;
+        public BaseCamp(int id, int row, int col, int quantity) {
+            this.id = id;
+            this.row = row;
+            this.col = col;
+            this.quantity = quantity;
+            total_quantity = quantity;
+            root = null;
+        }
+        @Override
+        public int compareTo(BaseCamp o) {
+            if (quantity == o.quantity) {
+                if (row == o.row)
+                    return col - o.col;
+                return row - o.row;
+            }
+            return quantity - o.quantity;
+        }
+
+        // check row, col in the basecamp
+        public boolean isGroup (int r, int c) {
+            if (Math.abs(row - r) + Math.abs(col - c) <= l) return true;
+            return false;
+        }
+
+        // find root
+        public BaseCamp findRoot() {
+            if (this.root == null) return this;
+            BaseCamp cur = root;
+            while (cur.root != null)
+                cur = cur.root;
+            return cur;
+        }
+    }
+
+    int l, n;
+    ArrayList<BaseCamp>[][] list_base_camps;
+    TreeSet<BaseCamp> all_base_camps;
+
+    void init (int L, int N) {
+        l = L;
+        n = N;
+        int size = N / l + 1;
+        list_base_camps = new ArrayList[size][size];
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                list_base_camps[i][j] = new ArrayList<>();
+            }
+        }
+        all_base_camps = new TreeSet<>();
+    }
+
+    int addBaseCamp (int mID, int mRow, int mCol, int mQuantity) {
+        // create new base camp
+        BaseCamp bc = new BaseCamp(mID, mRow, mCol, mQuantity);
+        BaseCamp cur = bc;
+        //list_base_camps[mRow / l][mCol / l].add(root);
+        int id = mID;
+        // find all base camp which can group
+        int sr = (mRow - l) < 0 ? 0 : (mRow - l) / l;
+        int er = (mRow + l) > n ? (n - 1) / l : (mRow + l) / l;
+        int sc = (mCol - l) < 0 ? 0 : (mCol - l) / l;
+        int ec = (mCol + l) > n ? (n - 1) / l : (mCol + l) / l;
+        for (int i = sr; i <= er; i++) {
+            for (int j = sc; j <= ec; j++) {
+                for (BaseCamp b : list_base_camps[i][j]) {
+                    if (!b.isGroup(mRow, mCol)) continue;
+                    // if b and camp in a group -> find root of b
+                    BaseCamp tmp = b.findRoot();
+                    if (tmp.id == id) continue;
+                    all_base_camps.remove(tmp);
+                    // choose root between tmp and root -> prio: row small -> col small
+                    if ((cur.quantity < tmp.quantity) || (cur.quantity == tmp.quantity && cur.row < tmp.row) ||
+                            (cur.quantity == tmp.quantity && cur.row == tmp.row && cur.col < tmp.col)) {
+                        // keep root: tmp is child
+                        id = cur.id;
+                        cur.total_quantity += tmp.total_quantity;
+                        tmp.root = cur;
+                    } else { // pick tmp is root, root is child
+                        id = tmp.id;
+                        tmp.total_quantity += cur.total_quantity;
+                        cur.root = tmp;
+                        cur = tmp;
+                    }
+                }
+            }
+        }
+        list_base_camps[mRow / l][mCol / l].add(bc);
+        all_base_camps.add(cur);
+        return cur.total_quantity;
+    }
+
+    int findBaseCampForDropping (int K) {
+        for (BaseCamp bc : all_base_camps) {
+            if (bc.total_quantity >= K)
+                return bc.id;
+        }
+        return -1;
     }
 }
