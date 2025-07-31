@@ -72,7 +72,7 @@ public class Solution {
     public static void main(String[] args) throws Exception {
         int T, MARK;
 
-        System.setIn(new java.io.FileInputStream("acm/samples/pro0711e/sample_input.txt"));
+        System.setIn(new java.io.FileInputStream("acm/pro0711e/sample_input.txt"));
         br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine(), " ");
 

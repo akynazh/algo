@@ -52,7 +52,7 @@ class Main {
 
     public static void main(String[] args) throws Exception {
 
-        System.setIn(new java.io.FileInputStream("acm/samples/pro1582/sample.in"));
+        System.setIn(new java.io.FileInputStream("acm/pro1582/sample.in"));
 
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer line = new StringTokenizer(br.readLine(), " ");

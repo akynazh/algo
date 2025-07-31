@@ -87,7 +87,7 @@ class Main
     {
         int TC, MARK;
 
-        System.setIn(new java.io.FileInputStream("acm/samples/pro1459c/sample.in"));
+        System.setIn(new java.io.FileInputStream("acm/pro165c/sample.in"));
 
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine(), " ");

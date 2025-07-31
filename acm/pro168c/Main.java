@@ -181,7 +181,7 @@ public class Main
 
     public static void main(String[] args) throws Exception
     {
-        System.setIn(new java.io.FileInputStream("acm/samples/pro1463c/input"));
+        System.setIn(new java.io.FileInputStream("acm/pro168c/input"));
 
         Scanner sc = new Scanner(System.in);
 

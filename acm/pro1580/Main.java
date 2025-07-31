@@ -66,7 +66,7 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
 
-        System.setIn(new java.io.FileInputStream("acm/samples/pro1580/sample25.in"));
+        System.setIn(new java.io.FileInputStream("acm/pro1580/sample25.in"));
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer line = new StringTokenizer(br.readLine(), " ");
 

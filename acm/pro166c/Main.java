@@ -61,7 +61,7 @@ public class Main {
     }
 
     public static void main(String[] args) throws Exception {
-        System.setIn(new java.io.FileInputStream("acm/samples/pro1461c/input"));
+        System.setIn(new java.io.FileInputStream("acm/pro166c/input"));
 
         Scanner sc = new Scanner(System.in);
 

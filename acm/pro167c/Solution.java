@@ -47,7 +47,7 @@ class Solution {
 
     public static void main(String[] args) throws Exception {
         int T, MARK;
-        System.setIn(new java.io.FileInputStream("acm/samples/pro1462c/input"));
+        System.setIn(new java.io.FileInputStream("acm/pro167c/input"));
 
         Scanner sc = new Scanner(System.in);
 
