@@ -117,7 +117,7 @@ class UserSolution {
 //        ArrayList<Order> hurryOrders = new ArrayList<>(orders.values());
 //        hurryOrders.sort((o1, o2) -> {
 //            int k1 = o1.m - o1.c, k2 = o2.m - o2.c;
-//            return k1 == k2 ? o1.t - o2.t : k2 - k1;
+//            return k1 == k2 ? o1.sample_input.txt - o2.sample_input.txt : k2 - k1;
 //        });
         int cnt = 0;
         for (Order order : sortedOrders) {

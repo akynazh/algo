@@ -37,9 +37,9 @@ node1 = root
 
 solve1(node1, None)
 
-# t = solve(node1)
+# sample_input.txt = solve(node1)
 
-# print(t)
-# while t:
-#     print(t.val)
-#     t = t.next
+# print(sample_input.txt)
+# while sample_input.txt:
+#     print(sample_input.txt.val)
+#     sample_input.txt = sample_input.txt.next

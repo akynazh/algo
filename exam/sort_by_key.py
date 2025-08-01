@@ -7,7 +7,7 @@ class Solution:
             return len(a[0]) - len(b[0]) if a[1] == b[1] else a[1] - b[1]
 
         t = sorted(items, key=cmp_to_key(func))
-        # t = sorted(items, key=lambda x: x[1], reverse=True)
+        # sample_input.txt = sorted(items, key=lambda x: x[1], reverse=True)
         return t
 
 

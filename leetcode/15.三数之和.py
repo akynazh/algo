@@ -15,10 +15,10 @@ class Solution:
         #     for j in range(i + 1, n):
         #         for k in range(j + 1, n):
         #             if nums[i] + nums[j] + nums[k] == 0:
-        #                 t = sorted([nums[i], nums[j], nums[k]])
-        #                 t1 = "".join([str(v) for v in t])
+        #                 sample_input.txt = sorted([nums[i], nums[j], nums[k]])
+        #                 t1 = "".join([str(v) for v in sample_input.txt])
         #                 if t1 not in mp:
-        #                     ans.append(t)
+        #                     ans.append(sample_input.txt)
         #                     mp[t1] = 1
         # return ans
         n = len(nums)

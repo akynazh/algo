@@ -9,3 +9,6 @@
 - pro1580: Spot Travel - 迪杰斯特拉 & 状态转移
 - pro1582: Playing Music - 线段树
 - pro169c: Decision Tree
+- pro2519t: Cafe 2 - 模拟系统
+- pro170c: Automated Parking Lot - 模拟系统
+
