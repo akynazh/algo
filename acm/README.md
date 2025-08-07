@@ -11,4 +11,6 @@
 - pro169c: Decision Tree
 - pro2519t: Cafe 2 - 模拟系统
 - pro170c: Automated Parking Lot - 模拟系统
+- pro0725e: Electric Vehicle Travel - 迪杰斯特拉 & 状态转移
+- pro2512t: Airport Parking - 模拟系统 & 延迟标记
 
