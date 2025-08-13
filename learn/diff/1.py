@@ -2,7 +2,7 @@
 nums = [3, 2, 1, 5, 6]
 
 # 构建差分数组
-diff = [0] * len(nums)
+diff = [0] * (len(nums) + 1)
 diff[0] = nums[0]
 for i in range(1, len(nums)):
     diff[i] = nums[i] - nums[i - 1]
@@ -11,8 +11,7 @@ for i in range(1, len(nums)):
 # 区间加 val：[l, r] 加上 val
 def range_add(l, r, val):
     diff[l] += val
-    if r + 1 < len(diff):
-        diff[r + 1] -= val
+    diff[r + 1] -= val
 
 
 # 应用操作
