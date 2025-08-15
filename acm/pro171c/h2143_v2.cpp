@@ -4,16 +4,16 @@
 #include <unordered_map>
 #define ri register int
 using namespace std;
-// ╨цоШо╒йгуБ╦ЖлБд©ц╩спи╬ЁЩ╡ывВ - жаиы╡╩сц©╪бгй╠╪ДнйлБак
-// ╧ь╪Эж║╦ЭпбспнйлБ - ох╢с1s1sуБжж╦Эпб©╙й╪йтйт
-// ╟╢ууHQио╣ддЁ╥щ╢П╟╦╣дк╪б╥пч╦д - Arpit - 20230816
-// 1. й╧сцsetвВн╙вэ╣дwaitlist ╟╢уу 1. time, 2. line idеепР
-// 2. й╧сц жП╡╫╦Эпп - ╤Ь╡╩йг╧ь╪Эж║╥жнЖ - ╦п╬УуБ╦Ж©иртсе╩╞
-// 3. в╒рБй╠©л╡╩дэжь╦╢
-// ©╢©╢дэ╡╩дэтыт╜ю╢╣д╩Ы╢║ио╦д, м╗╧Щх╚╬ж╠Да©╪гб╪йг╥ЯтЖ╪с ╨м ╣╠г╟й╠╪Д 
+// О©╫О©╫О©╫О©╫о╒О©╫О©╫О©╫О©╫О©╫О©╫О©╫д©ц╩О©╫О©╫и╬О©╫О©╫О©╫О©╫О©╫О©╫ - О©╫О©╫О©╫ы╡О©╫О©╫ц©О©╫О©╫О©╫й╠О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫
+// О©╫ь╪О©╫ж║О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫ - О©╫х╢О©╫1s1sО©╫О©╫О©╫ж╦О©╫О©╫б©О©╫й╪О©╫О©╫О©╫О©╫
+// О©╫О©╫О©╫О©╫HQО©╫о╣О©╫дЁО©╫щ╢П╟╦╣О©╫к╪б╥О©╫ч╦О©╫ - Arpit - 20230816
+// 1. й╧О©╫О©╫setО©╫О©╫н╙О©╫э╣О©╫waitlist О©╫О©╫О©╫О©╫ 1. time, 2. line idО©╫О©╫О©╫О©╫
+// 2. й╧О©╫О©╫ О©╫П╡╫╦О©╫О©╫О©╫ - О©╫О©╫О©╫О©╫О©╫г╧ь╪О©╫ж║О©╫О©╫О©╫О©╫ - О©╫п╬О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫е╩О©╫
+// 3. в╒О©╫О©╫й╠О©╫л╡О©╫О©╫О©╫О©╫ь╦О©╫
+// О©╫О©╫О©╫О©╫О©╫э╡О©╫О©╫О©╫О©╫О©╫т╜О©╫О©╫О©╫д╩О©╫О©╫О©╫О©╫о╦О©╫, м╗О©╫О©╫х╚О©╫ж╠О©╫О©╫О©╫О©╫О©╫б╪О©╫г╥О©╫О©╫О©╫О©╫О©╫ О©╫О©╫ О©╫О©╫г╟й╠О©╫О©╫ 
 struct lines
 {
-	// -1 ╠Мй╬©уоп
+	// -1 О©╫О©╫й╬О©╫О©╫О©╫О©╫
 	int lid;
 	queue<int> waitlist;
 	int woid;
@@ -32,7 +32,7 @@ struct orders
 {
 	int mid, eid, lid;
 	int rtime, endtime;
-	int state; //╢ФжЭ╣╠г╟╤╘╣╔в╢л╛ 1 - ╣х╢Щ, 2 - уЩтзиЗ╡З, 3 - иЗ╡ЗмЙЁи
+	int state; //О©╫О©╫О©╫О©╫О©╫О©╫г╟О©╫О©╫О©╫О©╫в╢л╛ 1 - О©╫х╢О©╫, 2 - О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫, 3 - О©╫О©╫О©╫О©╫О©╫О©╫О©╫
 }orderlist[20001];
 int ordernum;
 struct ordercomp
@@ -49,13 +49,13 @@ set<int, ordercomp> h1;
 unordered_map<int, int> m2oid(20001);
 int timenow;
 bool rnew;
-// updateр╙╣Ц = р╙╠ёж╓, ц©╦Жй╠©лж╩╦Эпбр╩╢н, рР╢кц©╢нupdateткпп╫АйЬ, timenowс╕╦цж╦оР╠╬╢нmTime╣добр╩й╠©л - р╡╬мйг mTime + 1;
+// updateр╙О©╫О©╫ = р╙О©╫О©╫ж╓, ц©О©╫О©╫й╠О©╫О©╫ж╩О©╫О©╫О©╫О©╫р╩О©╫О©╫, О©╫О©╫О©╫ц©О©╫О©╫updateО©╫О©╫О©╫п╫О©╫О©╫О©╫, timenowс╕О©╫О©╫ж╦О©╫Р╠╬╢О©╫mTimeО©╫О©╫О©╫О©╫р╩й╠О©╫О©╫ - р╡О©╫О©╫О©╫О©╫ mTime + 1;
 void update(int mTime) {
 	for (; timenow <= mTime; ++timenow)
 	{
 		bool completed = false;
 
-		// ╟ятыtimenowж╝г╟╣дх╚╡©╢╕юМ
+		// О©╫О©╫О©╫О©╫timenowж╝г╟О©╫О©╫х╚О©╫О©╫О©╫О©╫О©╫О©╫
 		auto it = h1.begin();
 		while (it != h1.end() && orderlist[*it].endtime <= timenow)
 		{
@@ -71,7 +71,7 @@ void update(int mTime) {
 		if (rnew || completed) {
 			rnew = false; 
 
-			// ╟╢ line number иЩпРЁ╒йтфТ╤╞
+			// О©╫О©╫ line number О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫
 			for (int i = 0; i < linenum; i++) {
 				lines& l = linelist[i];
 				if (l.woid != -1 || l.waitlist.empty()) continue;
@@ -88,7 +88,7 @@ void update(int mTime) {
 			}
 		}
 	}
-	timenow = mTime + 1; // ╠ёж╓timenow вэйг╢с╠╬╢н╣дmTimeобр╩й╠©л©╙й╪
+	timenow = mTime + 1; // О©╫О©╫ж╓timenow О©╫О©╫О©╫г╢с╠О©╫О©╫н╣О©╫mTimeО©╫О©╫р╩й╠О©╫л©О©╫й╪
 }
 void init(int L, int M) {
 	ordernum = 0;
@@ -103,9 +103,9 @@ void init(int L, int M) {
 }
 
 int request(int tStamp, int pId, int mLine, int eId, int mTime) {
-	// к╚╦Эпб
-	update(tStamp - 1); // ох╦Эпб╣╫tStamp╣дг╟р╩й╠©л
-	// йг╡╩йг©╪бгох╡ЕхК, ты╦Эпб?
+	// к╚О©╫О©╫О©╫О©╫
+	update(tStamp - 1); // О©╫х╦О©╫О©╫б╣О©╫tStampО©╫О©╫г╟р╩й╠О©╫О©╫
+	// О©╫г╡О©╫О©╫г©О©╫О©╫О©╫О©╫х╡О©╫О©╫О©╫, О©╫ы╦О©╫О©╫О©╫?
 	orderlist[ordernum].eid = eId;
 	orderlist[ordernum].lid = mLine;
 	orderlist[ordernum].mid = pId;
@@ -115,10 +115,10 @@ int request(int tStamp, int pId, int mLine, int eId, int mTime) {
 	m2oid[pId] = ordernum++;
 	//
 	rnew = true;
-	update(tStamp); //тз╡ЕхК╨Стз╦Эпбр╩╢н
+	update(tStamp); //О©╫з╡О©╫О©╫О©╫О©╫О©╫з╦О©╫О©╫О©╫р╩О©╫О©╫
 	int toid = linelist[mLine].woid;
 	if (toid == -1) return -1;
-	return orderlist[toid].mid; // ╥╣╩ь╡ЕхК╣дуБ╦Жline╣дуЩтз╧╓вВ╣дв╢л╛
+	return orderlist[toid].mid; // О©╫О©╫О©╫ь╡О©╫О©╫О©╫О©╫О©╫О©╫О©╫lineО©╫О©╫О©╫О©╫О©╫з╧О©╫О©╫О©╫О©╫О©╫в╢л╛
 }
 
 int status(int tStamp, int pId) {
