@@ -17,6 +17,7 @@
 - pro2512t: Airport Parking - 模拟系统 & 延迟标记
 - pro0802e: Smart Farm - 网格索引 & 延迟标记
 - pro171c: Production System - 模拟系统 & 事件驱动
+- pro0808e: Jewel Matching - 模拟系统
 
 ## 2025 SW Test Schedule (July, August)	
 

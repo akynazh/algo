@@ -5,3 +5,6 @@
 .DS_Store
 .vscode
 out
+sample_input.txt
+input
+*.in
