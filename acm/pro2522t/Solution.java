@@ -35,13 +35,15 @@ class UserSolution {
         cities[road[0]].remove(road[1]);
     }
 
+    Queue<int[]> queue = new PriorityQueue<>((a, b) -> a[1] - b[1]);
+    int[] dis = new int[1000];
+
     public int calculate(int sCity, int eCity) {
-        int[] dis = new int[N];
         int[] prev = new int[N];
         Arrays.fill(prev, -1);
         Arrays.fill(dis, Integer.MAX_VALUE);
         dis[sCity] = 0;
-        Queue<int[]> queue = new PriorityQueue<>((a, b) -> a[1] - b[1]);
+        queue.clear();
         queue.offer(new int[]{sCity, 0});
         int delay = 0;
         while (!queue.isEmpty()) {
@@ -57,6 +59,7 @@ class UserSolution {
             }
         }
         if (dis[eCity] == Integer.MAX_VALUE) return -1;
+        int minDis = dis[eCity];
         int ke = eCity;
         while (prev[ke] != -1) {
             int ks = prev[ke];
@@ -70,16 +73,15 @@ class UserSolution {
             if (minTime == Integer.MAX_VALUE) {
                 return -1;
             }
-            delay = Math.max(minTime - dis[eCity], delay);
+            delay = Math.max(minTime - minDis, delay);
         }
         return delay;
     }
 
     public int getMinTime(int sCity, int eCity) {
-        int[] dis = new int[N];
         Arrays.fill(dis, Integer.MAX_VALUE);
         dis[sCity] = 0;
-        Queue<int[]> queue = new PriorityQueue<>((a, b) -> a[1] - b[1]);
+        queue.clear();
         queue.offer(new int[]{sCity, 0});
         while (!queue.isEmpty()) {
             int[] road = queue.poll();

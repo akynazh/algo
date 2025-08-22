@@ -5,6 +5,175 @@ import java.io.InputStreamReader;
 import java.util.*;
 
 class UserSolution {
+    GroupManager manager;
+    Server[] servers;
+    Map<Integer, User> users;
+
+    public void init(int N) {
+        users = new HashMap<>();
+        manager = new GroupManager();
+        servers = new Server[N];
+        for (int id = 0; id < servers.length; id++) {
+            servers[id] = new Server(id);
+        }
+    }
+
+    public int tryAccess(int K, int[] mIDs) {
+        Server server = servers[0];
+        for (int id = 1; id < servers.length; id++) {
+            if (servers[id].size < server.size) {
+                server = servers[id];
+            }
+        }
+
+        Group group = new Group();
+        group.server = server;
+        for (int i = 0; i < K; i++) {
+            User user = new User(mIDs[i]);
+            users.put(mIDs[i], user);
+            user.group = group;
+            group.add(user);
+        }
+        server.groups.add(group);
+        manager.add(group);
+        group.size = K;
+        server.size += K;
+
+        return server.id;
+    }
+
+    public void deAccess(int K, int[] mIDs) {
+        for (int i = 0; i < K; i++) {
+            User user = users.remove(mIDs[i]);
+            Group group = user.group;
+            Server server = group.server;
+            group.size -= 1;
+            server.size -= 1;
+            user.prev.next = user.next;
+            user.next.prev = user.prev;
+            if (group.size == 0) {
+                server.groups.remove(group);
+                manager.remove(group);
+            }
+        }
+    }
+
+    public void logIn(int mCnt) {
+        while (mCnt > 0) {
+            Group group = manager.head.next;
+            int count = Math.min(mCnt, group.size);
+            mCnt -= count;
+            group.size -= count;
+            group.server.size -= count;
+            User user = group.head;
+            for (int i = 0; i < count; i++) {
+                user = user.next;
+                users.remove(user.id);
+            }
+            group.head.next = user.next;
+            user.next.prev = group.head;
+            if (group.size == 0) {
+                group.server.groups.remove(group);
+                manager.remove(group);
+            }
+        }
+    }
+
+    public int reOrder(int mServerID) {
+        Server server = servers[mServerID - 1];
+        for (Group group : server.groups) {
+            manager.remove(group);
+            manager.add(group);
+        }
+        return server.size;
+    }
+
+    public int waitOrder(int mID) {
+        User target = users.get(mID);
+        if (target == null)
+            return 0;
+        int result = 1;
+        for (Group group = manager.head.next; true; group = group.next) {
+            if (group != target.group) {
+                result += group.size;
+                continue;
+            }
+            for (User user = group.head.next; user != target; user = user.next) {
+                result += 1;
+            }
+            return result;
+        }
+    }
+}
+
+class User {
+    int id;
+    User next, prev;
+    Group group;
+
+    User(int id) {
+        this.id = id;
+    }
+
+    User() {
+    }
+}
+
+class Group {
+    User head, tail;
+    Group next, prev;
+    Server server;
+    int size;
+
+    Group() {
+        head = new User();
+        tail = new User();
+        head.next = tail;
+        tail.prev = head;
+    }
+
+    void add(User user) {
+        user.next = tail;
+        user.prev = tail.prev;
+        user.prev.next = user;
+        user.next.prev = user;
+    }
+}
+
+class Server {
+    List<Group> groups;
+    int size, id;
+
+    Server(int id) {
+        this.groups = new ArrayList<Group>();
+        this.id = id + 1;
+    }
+}
+
+class GroupManager {
+    Group head, tail;
+
+    GroupManager() {
+        head = new Group();
+        tail = new Group();
+        head.next = tail;
+        tail.prev = head;
+    }
+
+    void add(Group group) {
+        group.next = tail;
+        group.prev = tail.prev;
+        group.next.prev = group;
+        group.prev.next = group;
+    }
+
+    void remove(Group group) {
+        group.next.prev = group.prev;
+        group.prev.next = group.next;
+    }
+}
+
+class UserSolutionFail {
     int N;
     Queue<Integer> users;
     Queue<Integer>[] servers;
@@ -153,10 +322,12 @@ public class Solution {
         int T = Integer.parseInt(line.nextToken());
         int MARK = Integer.parseInt(line.nextToken());
 
+        long s = System.currentTimeMillis();
         for (int tc = 1; tc <= T; tc++) {
             int score = run(br) ? MARK : 0;
             System.out.println("#" + tc + " " + score);
         }
+        System.out.println(System.currentTimeMillis() - s);
 
         br.close();
     }

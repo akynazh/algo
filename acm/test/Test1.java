@@ -1,9 +1,6 @@
 package test;
 
-import java.util.Comparator;
-import java.util.PriorityQueue;
-import java.util.Queue;
-import java.util.TreeSet;
+import java.util.*;
 
 public class Test1 {
     static class Obj {
@@ -23,6 +20,17 @@ public class Test1 {
 //        set.remove(first);
 //        System.out.println(set.first().a);
 
-        System.out.println('a' - 'b');
+//        System.out.println('a' - 'b');
+
+        Queue<Integer> queue = new ArrayDeque<>();
+        Map<Integer, Integer> map = new HashMap<>();
+        map.put(1, 999);
+        queue.offer(3);
+        queue.offer(6);
+        queue.offer(999);
+        queue.remove(map.get(1));
+        System.out.println(queue.poll());
+        System.out.println(queue.poll());
+        System.out.println(queue.poll());
     }
 }
