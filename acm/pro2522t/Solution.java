@@ -47,7 +47,7 @@ class UserSolution {
             for (Integer ee : cities[e]) {
                 if (roads.get(conn[e][ee])[2] + t < dis[ee]) {
                     if (dis[ee] != Integer.MAX_VALUE) {
-                        delay = Math.max(delay, )
+                        delay = Math.max(delay, roads.get(conn[e][ee])[2] + t - dis[ee]);
                     }
                     dis[ee] = roads.get(conn[e][ee])[2] + t;
                     queue.offer(new int[]{ee, dis[ee]});
