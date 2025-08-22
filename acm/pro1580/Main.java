@@ -139,6 +139,7 @@ class UserSolution {
 
     int getMinMoney(int mStartSpot, int mEndSpot, int mMaxTime) {
         int ans = Integer.MAX_VALUE;
+        // minCost[N][1/2/3]
         Map<String, Integer> minCostMap = new HashMap<>();
         Map<String, Integer> minTimeMap = new HashMap<>();
         PriorityQueue<State> pq = new PriorityQueue<>();
@@ -207,5 +208,121 @@ class UserSolution {
         }
 
         return -1;
+    }
+}
+
+class UserSolutionOther {
+    final int BO = 1;
+    final int XE = 2;
+    final int TAXI = 3;
+    final int MAX = 101;
+
+    int n;
+    int[][] road;
+    boolean[] bikeRent;
+    int bestCost, maxTime, endSpot;
+    int[][] minTime, minCost;
+
+    class Spot{
+        int[] toSpot = new int[MAX];
+        int[] disSpot = new int[MAX];
+        int cnt;
+        void connect(int to, int dis){
+            this.toSpot[cnt] = to;
+            this.disSpot[cnt] = dis;
+            this.cnt++;
+        }
+    }
+    Spot[] spot;
+    void init(int N)
+    {
+        n = N;
+        road = new int[MAX][MAX];
+        bikeRent = new boolean[MAX];
+        minTime = new int[MAX][4];
+        minCost = new int[MAX][4];
+        spot = new Spot[MAX];
+        for(int i = 0; i<=n; i++){
+            spot[i] = new Spot();
+            for(int j = 0; j<=n; j++){
+                if(i==j) road[i][j] = 0;
+                else road[i][j] = -1;
+            }
+            bikeRent[i] = false;
+            spot[i].cnt = 0;
+        }
+    }
+
+    void addRoad(int K, int mSpotA[], int mSpotB[], int mDis[])
+    {
+        for(int i = 0; i< K; i++){
+            spot[mSpotA[i]].connect(mSpotB[i], mDis[i]);
+            spot[mSpotB[i]].connect(mSpotA[i], mDis[i]);
+
+        }
+    }
+
+    void addBikeRent(int mSpot)
+    {
+        bikeRent[mSpot] = true;
+    }
+
+    void BT(int spotCur, int type, int timeCur, int costCur, int spotParent){
+        if(costCur > bestCost) return;
+        if(timeCur > maxTime) return;
+        if(timeCur >= minTime[spotCur][type] && costCur >= minCost[spotCur][type]) return;
+        minTime[spotCur][type] = timeCur;
+        minCost[spotCur][type] = costCur;
+        if(spotCur == endSpot){
+            if(type != XE || bikeRent[spotCur] == true ) {
+                bestCost = costCur;
+                return;
+            }
+        }
+        for(int i = 0 ; i < spot[spotCur].cnt ;i++){
+            int nextSpot = spot[spotCur].toSpot[i];
+            int dist = spot[spotCur].disSpot[i];
+
+
+            if(type == XE){
+                if(nextSpot != spotParent){
+                    BT(nextSpot,XE,timeCur + 4*dist,costCur+4*dist, spotCur);
+                }
+                if(bikeRent[spotCur]){
+                    BT(nextSpot,BO,timeCur + 17*dist,costCur,spotCur);
+                    BT(nextSpot,TAXI,timeCur + 7 + dist,costCur+19*dist,spotCur);
+                }
+            } else {
+                if(nextSpot == spotParent) continue;
+                if(bikeRent[spotCur]){
+                    BT(nextSpot,XE,timeCur + 4*dist,costCur + 4*dist,spotCur);
+                }
+                BT(nextSpot,BO,timeCur+17*dist,costCur,spotCur);
+                if(type == TAXI) {
+                    BT(nextSpot,TAXI,timeCur + dist, costCur+19*dist,spotCur);
+                } else {
+                    BT(nextSpot,TAXI,timeCur + dist + 7 ,costCur+19*dist,spotCur);
+                }
+            }
+        }
+    }
+
+    int getMinMoney(int mStartSpot, int mEndSpot, int mMaxTime)
+    {
+        bestCost = Integer.MAX_VALUE;
+        maxTime = mMaxTime;
+        endSpot = mEndSpot;
+        for(int i = 0 ; i < MAX ; i++){
+            for(int j = 1 ; j < 4 ;j++){
+                minCost[i][j] = Integer.MAX_VALUE;
+                minTime[i][j] = mMaxTime;
+            }
+        }
+
+        BT(mStartSpot,BO,0,0,0);
+
+        if(bestCost == Integer.MAX_VALUE ) return -1;
+        else return bestCost;
+
     }
 }

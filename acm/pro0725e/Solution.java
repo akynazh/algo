@@ -113,6 +113,7 @@ class UserSolution {
         }
         Queue<State> queue = new PriorityQueue<>();
         queue.offer(new State(sCity, B, 0));
+        // 可以发现 minTime 和 State 是对应的
         minTime[sCity][B] = 0;
         while (!queue.isEmpty()) {
             State state = queue.poll();
