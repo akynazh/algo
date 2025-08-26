@@ -21,7 +21,7 @@
 - pro0808e: Jewel Matching - 模拟系统
 - pro2522t: Road Destruction - 迪杰斯特拉
 - pro2524t: Login Waiting List 2 - 模拟系统
-- pro172c: 平面分割 - 数学 TODO
+- pro172c: 平面分割 - 数学
 
 ## 2025 SW Test Schedule (July, August)	
 

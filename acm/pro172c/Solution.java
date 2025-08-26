@@ -11,12 +11,13 @@ class UserSolution {
     List<Line> lineDia;
 
     static class Line {
-        int id, x, y, v;
+        int id, x, y, v, t;
 
         public Line(int id, int x, int y, int type) {
             this.id = id;
             this.x = x;
             this.y = y;
+            this.t = type;
             if (type == 0) v = y;
             else if (type == 1) v = x;
             else v = y - x;
@@ -56,23 +57,31 @@ class UserSolution {
                 lineDia.add(line);
             }
         }
+        lineX.add(new Line(0, 0, 200000001, 0));
+        lineX.add(new Line(0, 0, -200000001, 0));
+        lineY.add(new Line(0, 200000001, 0, 1));
+        lineY.add(new Line(0, -200000001, 0, 1));
+        lineDia.add(new Line(0, 0, 200000001, 2));
+        lineDia.add(new Line(0, 0, -200000001, 2));
         lineX.sort(Comparator.comparingInt(l -> l.v));
         lineY.sort(Comparator.comparingInt(l -> l.v));
         lineDia.sort(Comparator.comparingInt(l -> l.v));
     }
 
     public int findPiece(int x, int y) {
-        List<Line> lines = new ArrayList<>();
-        lines.addAll(getTwoLines(y, lineX));
-        lines.addAll(getTwoLines(x, lineY));
-        lines.addAll(getTwoLines(y - x, lineDia));
-        if (lines.size() == 1) return lines.get(0).id;
-        if (lines.size() == 2) return lines.get(0).id + lines.get(1).id;
-
+        List<Line> lineXs = getTwoLines(y, lineX);
+        List<Line> lineYs = getTwoLines(x, lineY);
+        List<Line> lineDias = getTwoLines(y - x, lineDia);
+        Line lineTop = lineXs.get(0), lineBottom = lineXs.get(1);
+        Line lineLeft = lineYs.get(1), lineRight = lineYs.get(0);
+        Line lineTopLeft = lineDias.get(0), lineBottomRight = lineDias.get(1);
         int ret = 0;
-        for (Line line : lines) {
-            ret += line.id;
-        }
+        if (lineTop.v - lineLeft.v > lineTopLeft.v) ret += lineTopLeft.id;
+        if (lineTop.v - lineRight.v > lineBottomRight.v) ret += lineRight.id;
+        if (lineTop.v - lineRight.v < lineTopLeft.v) ret += lineTop.id;
+        if (lineBottom.v - lineRight.v < lineBottomRight.v) ret += lineBottomRight.id;
+        if (lineBottom.v - lineLeft.v < lineTopLeft.v) ret += lineLeft.id;
+        if (lineBottom.v - lineLeft.v > lineBottomRight.v) ret += lineBottom.id;
         return ret;
     }
 }
