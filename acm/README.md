@@ -23,7 +23,8 @@
 - pro2524t: Login Waiting List 2 - 模拟系统
 - pro172c: 平面分割 - 数学
 - pro2520t: Worm Game - 模拟系统
-- pro2516t: Marathon Course
+- pro2516t: Marathon Course - 回溯和剪枝
+- pro0823e: Large Image - 网格索引
 
 ## 2025 SW Test Schedule (July, August)	
 
