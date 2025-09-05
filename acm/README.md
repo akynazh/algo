@@ -38,7 +38,7 @@
   - Saturday 2 August : Professional (afternoon)
   - Friday 8 August : Professional (afternoon) *Python
   - Wednesday 13 August : Advanced (afternoon)
-  - Saturday 23 August : Professional (afternoon)
+  - Saturday 23 August : Professional (afternoon) !!!!!!!!!!!!!!!!!!! PASS !!!!!!!!!!!!!!!!!!!
 
 [September]
   - Saturday 6 September : Professional (afternoon) *Python
