@@ -10,6 +10,11 @@ public class Test1 {
         }
     }
     public static void main(String[] args) {
+        System.out.println(String.format("{\"pageId\":\"1730185412338WXE\",\"pvId\":\"17301854111399nlsV3o\"," +
+                "\"mainContent\":{\"productId\":16030,\"productType\":105,\"secureScore\":100},\"resourceList\":" +
+                "[{\"tplCompKey\":\"detail\",\"content\":{\"productId\":\"16030\",\"productType\":\"105\"," +
+                "\"feedType\":\"XTOPIC_LATEST\",\"pro\":\"0,1,3\",\"page\":\"1\",\"size\":%d,\"spm\":\"smwp.srpage.undefined\"," +
+                "\"requestId\":\"17301854123372ca\"},\"context\":{}}]}", 1));
 //        TreeSet<Obj> set = new TreeSet<>(Comparator.comparingInt(o -> o.a));
 //        set.add(new Obj(4));
 //        set.add(new Obj(2));
