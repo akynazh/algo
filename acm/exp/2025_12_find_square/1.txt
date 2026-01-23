@@ -1,0 +1,96 @@
+main.cpp
+
+#include <stdio.h>
+
+const int SIZE = 64;
+
+extern int recog(unsigned char image[SIZE][SIZE]);
+
+static int seed = 3;  // seed can be changed
+
+static unsigned char dummy1[256];  // dummy size can be changed
+static unsigned char image[SIZE][SIZE];
+static unsigned char dummy2[256];
+static int COUNT;
+static int SCORE = 0;
+
+static int pseudo_rand(void)
+{
+	seed = seed * 214013 + 2531011;
+	return (seed >> 16) & 0x7FFF;
+}
+
+static void rect(void)
+{
+	int sx, ex, sy, ey, t;
+
+	while (true) {
+		sx = pseudo_rand() % SIZE;
+		sy = pseudo_rand() % SIZE;
+		ex = pseudo_rand() % SIZE;
+		ey = pseudo_rand() % SIZE;
+
+		if (ex < sx)
+		{
+			t = ex;
+			ex = sx;
+			sx = t;
+		}
+
+		if (ey < sy)
+		{
+			t = ey;
+			ey = sy;
+			sy = t;
+		}
+
+		if (ex - sx < 9) continue;
+		if (ey - sy < 9) continue;
+
+		break;
+	}
+
+	for (register int y = sy; y <= ey; y++)
+		for (register int x = sx; x <= ex; x++)
+			image[y][x]++;
+
+	if ((ex - sx) == (ey - sy)) COUNT++;
+}
+
+
+static void build(void)
+{
+	for (register int y = 0; y < SIZE; y++)
+		for (register int x = 0; x < SIZE; x++)
+			image[y][x] = 0;
+
+	COUNT = 0;
+
+	for (int c = 0; c < 50; c++)
+		rect();
+}
+
+
+int main(void)
+{
+	for (register int T = 0; T < 10000; T++)
+	{
+		build();
+		if (recog(image) == COUNT) SCORE++;
+	}
+
+	printf("RESULT : %d\n", SCORE);
+}
+
+---
+
+user.cpp
+//const int SIZE = 64;
+
+int recog(unsigned char image[SIZE][SIZE]) {
+	return -1;
+}
+
+---
+
+complete user.cpp, SCORE >= 7000
