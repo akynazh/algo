@@ -1,86 +1,74 @@
 typedef struct {
 	int y, x;
-} Coordinates;
+}Coordinates;
 
 typedef struct {
 	Coordinates src;
 	Coordinates dest;
 } Delivery;
 
-typedef struct {
-	int id;
-	int value;  // 价值 = 得分 / 时间消耗
-	int time;   // 完成该任务所需时间
-	int score;  // 完成该任务可获得的得分
-} Task;
-
 extern bool deliver(int mID);
 
-// 计算曼哈顿距离
-static int distance(Coordinates a, Coordinates b) {
-	int dy = a.y - b.y;
-	int dx = a.x - b.x;
-	return (dy >= 0 ? dy : -dy) + (dx >= 0 ? dx : -dx);
-}
-
-// 快速排序函数，按价值降序排列
-static void quickSort(Task arr[], int low, int high) {
-	if (low >= high) return;
+void process(Coordinates mRider, Delivery mDeliveries[])
+{
+	// 优化的贪心算法：考虑剩余时间和订单完成状态
+	int currentX = mRider.x;
+	int currentY = mRider.y;
 	
-	int pivot = arr[high].value;
-	int i = low - 1;
-	
-	for (int j = low; j < high; j++) {
-		if (arr[j].value > pivot) {  // 按价值降序排列
-			i++;
-			Task temp = arr[i];
-			arr[i] = arr[j];
-			arr[j] = temp;
-		}
-	}
-	
-	Task temp = arr[i+1];
-	arr[i+1] = arr[high];
-	arr[high] = temp;
-	
-	quickSort(arr, low, i);
-	quickSort(arr, i+2, high);
-}
-
-void process(Coordinates mRider, Delivery mDeliveries[]) {
-	Task tasks[2000];
-	int taskCount = 0;
-	
-	// 计算每个任务的价值
+	// 跟踪已完成的订单
+	char completed[2000];
 	for (int i = 0; i < 2000; i++) {
-		// 计算完成该任务所需的时间
-		int timeToSrc = distance(mRider, mDeliveries[i].src);
-		int timeToDest = distance(mDeliveries[i].src, mDeliveries[i].dest);
-		int totalTime = timeToSrc + timeToDest;
+		completed[i] = 0;
+	}
+	
+	while (1) {
+		int bestOrder = -1;
+		double bestRatio = -1.0;
+		int bestTime = 0;
 		
-		// 计算该任务的得分
-		int dist = timeToDest;
-		int score = 3000 + 300 * dist;
-		
-		// 计算价值（得分/时间）
-		if (totalTime > 0) {
-			int value = score / totalTime;
+		// 遍历所有未完成的订单，找到最优的
+		for (int i = 0; i < 2000; i++) {
+			if (completed[i]) continue;
 			
-			tasks[taskCount].id = i;
-			tasks[taskCount].value = value;
-			tasks[taskCount].time = totalTime;
-			tasks[taskCount].score = score;
-			taskCount++;
+			// 计算到餐厅的时间
+			int timeToRestaurant = (currentX - mDeliveries[i].src.x > 0 ? currentX - mDeliveries[i].src.x : mDeliveries[i].src.x - currentX)
+			                     + (currentY - mDeliveries[i].src.y > 0 ? currentY - mDeliveries[i].src.y : mDeliveries[i].src.y - currentY);
+			
+			// 计算配送时间
+			int deliveryTime = (mDeliveries[i].dest.x - mDeliveries[i].src.x > 0 ? mDeliveries[i].dest.x - mDeliveries[i].src.x : mDeliveries[i].src.x - mDeliveries[i].dest.x)
+			                 + (mDeliveries[i].dest.y - mDeliveries[i].src.y > 0 ? mDeliveries[i].dest.y - mDeliveries[i].src.y : mDeliveries[i].src.y - mDeliveries[i].dest.y);
+			
+			int totalTime = timeToRestaurant + deliveryTime;
+			
+			// 计算得分
+			int score = 3000 + 300 * deliveryTime;
+			
+			// 计算性价比：得分/时间
+			// 数学原理：基于分数背包问题的贪心策略
+			// 目标：最大化单位时间收益 score/time 当时间有限时，优先选择单位时间收益最高的任务
+			// 这是解决带约束优化问题的经典贪心方法
+			double ratio = (double)score / totalTime;
+			
+			// 优先选择性价比高的订单
+			// 当时间有限时，优先完成单位时间收益最高的任务
+			if (ratio > bestRatio) {
+				bestRatio = ratio;
+				bestOrder = i;
+				bestTime = totalTime;
+			}
 		}
-	}
-	
-	// 按价值排序
-	if (taskCount > 1) {
-		quickSort(tasks, 0, taskCount - 1);
-	}
-	
-	// 贪心选择任务
-	for (int i = 0; i < taskCount; i++) {
-		deliver(tasks[i].id);
+		
+		// 如果没有找到合适的订单，结束
+		if (bestOrder == -1) break;
+		
+		// 执行配送
+		if (deliver(bestOrder)) {
+			completed[bestOrder] = 1;
+			currentX = mDeliveries[bestOrder].dest.x;
+			currentY = mDeliveries[bestOrder].dest.y;
+		} else {
+			// 如果配送失败（时间不够或其他原因），标记为已完成并继续
+			completed[bestOrder] = 1;
+		}
 	}
 }
