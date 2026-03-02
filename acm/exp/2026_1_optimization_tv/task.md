@@ -1,3 +1,13 @@
+帮我完成 acm/exp/2026_1_optimization_tv，参考 task.md，分数就可能高，最好要高于 1100000，有人达到 1200000了
+
+帮我完成 acm/exp/2026_1_optimization_tv，参考 task.md，分数要尽可能高，最好要高于  1200000
+
+---
+
+g++ -O3 -o main main.cpp user.cpp && echo "编译成功" && ./main < test_input.txt
+
+---
+
 Execution Time
 1, 000 ms per test case
 
@@ -198,6 +208,8 @@ int main(void)
 }
 
 user code
+
+```c
 extern void feature_info(int featurePower[], double featureQuality[], int featureMedian[]);
 extern void user_info(int userDistance[]);
 extern void screen_control(const int featureValue[]);
@@ -206,7 +218,7 @@ void process(void)
 {
 
 }
-
+```
 输入
 For more details, analyze the given code.
 输出
