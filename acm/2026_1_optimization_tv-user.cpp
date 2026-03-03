@@ -34,8 +34,8 @@ void process(void)
         double userWeightedScore[MAX_FEATURES] = {0};
         
         // Dynamic distance threshold based on time progress
-        int distThreshold = 410 + (time / 100) * 38;  
-        if (distThreshold > 860) distThreshold = 860;
+        int distThreshold = 460 + (time / 150) * 25;  
+        if (distThreshold > 700) distThreshold = 700;
 
         for (int u = 0; u < MAX_USERS; u++)
         {
@@ -49,7 +49,7 @@ void process(void)
                 if (distDiff < 0) distDiff = -distDiff;
                 
                 // Fine-tuned distance weighting function
-                double weight = 325.0 / (distDiff + 9);
+                double weight = 210.0 / (distDiff + 32);
                 userWeightedScore[i] += weight;
                 
                 if (distDiff <= distThreshold)
@@ -66,7 +66,7 @@ void process(void)
             if (featurePower[i] > 0)
             {
                 // Optimize weighting - more emphasis on weighted score
-                double score = userCount[i] * 0.04 + userWeightedScore[i] * 0.96;
+                double score = userCount[i] * 0.45 + userWeightedScore[i] * 0.55;
                 ratio[i] = (featureQuality[i] * score) / featurePower[i];
             }
             else
@@ -124,38 +124,33 @@ void process(void)
             double ratioThreshold = ratio[i];
             int userThreshold = userCount[i];
             
-            // Optimized thresholds - balanced allocation
-            if (userThreshold > MAX_USERS * 0.56 && ratioThreshold > 2.7)
+            if (userThreshold > MAX_USERS * 0.32 && ratioThreshold > 1.5)
             {
                 targetValue = 100;
             }
-            else if (userThreshold > MAX_USERS * 0.48 && ratioThreshold > 1.65)
+            else if (userThreshold > MAX_USERS * 0.26 && ratioThreshold > 0.95)
             {
-                targetValue = 100;
+                targetValue = 94;
             }
-            else if (userThreshold > MAX_USERS * 0.40 && ratioThreshold > 1.16)
+            else if (userThreshold > MAX_USERS * 0.18 && ratioThreshold > 0.65)
             {
-                targetValue = 97;
+                targetValue = 78;
             }
-            else if (userThreshold > MAX_USERS * 0.32 && ratioThreshold > 0.82)
+            else if (userThreshold > MAX_USERS * 0.1 && ratioThreshold > 0.32)
             {
-                targetValue = 86;
+                targetValue = 62;
             }
-            else if (userThreshold > MAX_USERS * 0.24 && ratioThreshold > 0.50)
+            else if (ratioThreshold > 0.22)
             {
-                targetValue = 70;
+                targetValue = 42;
             }
-            else if (ratioThreshold > 0.40)
+            else if (ratioThreshold > 0.08)
             {
-                targetValue = 54;
-            }
-            else if (ratioThreshold > 0.30)
-            {
-                targetValue = 40;
+                targetValue = 25;
             }
             else
             {
-                targetValue = 30;
+                targetValue = 12;
             }
 
             if (targetValue > 100) targetValue = 100;
@@ -190,7 +185,7 @@ void process(void)
         }
 
         // Try to use remaining power by incrementally increasing values
-        for (int pass = 0; pass < 400; pass++)
+        for (int pass = 0; pass < 100; pass++)
         {
             double currentPower = 0;
             for (int f = 0; f < MAX_FEATURES; f++)
@@ -200,17 +195,17 @@ void process(void)
             }
 
             double remainingPower = POWER_BUDGET - currentPower;
-            if (remainingPower < 0.1)
+            if (remainingPower < 0.2)
                 break;
 
             int improved = 0;
             
             // Try to increase best features first in early passes
-            int passType = (pass < 100) ? 0 : 1;
+            int passType = (pass < 40) ? 0 : 1;
 
             for (int idx = 0; idx < MAX_FEATURES; idx++)
             {
-                if (passType == 1 && idx > 4)  // In later passes, focus on best features
+                if (passType == 1 && idx > 10)  // In later passes, focus on best features
                     break;
                     
                 int i = sortedFeatures[idx];

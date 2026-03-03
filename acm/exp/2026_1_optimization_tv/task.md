@@ -1,6 +1,4 @@
-帮我完成 acm/exp/2026_1_optimization_tv，参考 task.md，分数就可能高，最好要高于 1100000，有人达到 1200000了
-
-帮我完成 acm/exp/2026_1_optimization_tv，参考 task.md，分数要尽可能高，最好要高于  1200000
+帮我完成 user.cpp，分数要尽可能高，要高于 1200000
 
 ---
 
@@ -210,6 +208,7 @@ int main(void)
 user code
 
 ```c
+// user.cpp
 extern void feature_info(int featurePower[], double featureQuality[], int featureMedian[]);
 extern void user_info(int userDistance[]);
 extern void screen_control(const int featureValue[]);
@@ -219,6 +218,7 @@ void process(void)
 
 }
 ```
+
 输入
 For more details, analyze the given code.
 输出
@@ -236,4 +236,22 @@ For more details, analyze the given code.
 9
 10
 样例输出 Copy
-SCORE: 0
+SCORE: 1203123
+
+---
+
+test_input.txt
+
+```txt
+10
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+```
