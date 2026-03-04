@@ -28,214 +28,163 @@ void process(void)
         user_info(userDistance);
 
         int featureValue[MAX_FEATURES];
-        
-        // Count users affected by each feature within distance threshold
-        int userCount[MAX_FEATURES] = {0};
-        double userWeightedScore[MAX_FEATURES] = {0};
-        
-        // Dynamic distance threshold based on time progress
-        int distThreshold = 410 + (time / 100) * 38;  
-        if (distThreshold > 860) distThreshold = 860;
-
-        for (int u = 0; u < MAX_USERS; u++)
-        {
-            int d = userDistance[u];
-            if (d < MIN_DISTANCE) d = MIN_DISTANCE;
-            if (d > MAX_DISTANCE) d = MAX_DISTANCE;
-
-            for (int i = 0; i < MAX_FEATURES; i++)
-            {
-                int distDiff = (featureMedian[i] - d);
-                if (distDiff < 0) distDiff = -distDiff;
-                
-                // Fine-tuned distance weighting function
-                double weight = 325.0 / (distDiff + 9);
-                userWeightedScore[i] += weight;
-                
-                if (distDiff <= distThreshold)
-                {
-                    userCount[i]++;
-                }
-            }
-        }
-
-        // Calculate efficiency ratio for power allocation
-        double ratio[MAX_FEATURES];
-        for (int i = 0; i < MAX_FEATURES; i++)
-        {
-            if (featurePower[i] > 0)
-            {
-                // Optimize weighting - more emphasis on weighted score
-                double score = userCount[i] * 0.04 + userWeightedScore[i] * 0.96;
-                ratio[i] = (featureQuality[i] * score) / featurePower[i];
-            }
-            else
-            {
-                ratio[i] = 0;
-            }
-        }
-
-        // Sort features by efficiency ratio (bubble sort)
-        int sortedFeatures[MAX_FEATURES];
-        for (int i = 0; i < MAX_FEATURES; i++)
-        {
-            sortedFeatures[i] = i;
-        }
-
-        for (int i = 0; i < MAX_FEATURES - 1; i++)
-        {
-            for (int j = i + 1; j < MAX_FEATURES; j++)
-            {
-                if (ratio[sortedFeatures[i]] < ratio[sortedFeatures[j]])
-                {
-                    int temp = sortedFeatures[i];
-                    sortedFeatures[i] = sortedFeatures[j];
-                    sortedFeatures[j] = temp;
-                }
-            }
-        }
-
-        // Initialize all feature values to 0
         for (int i = 0; i < MAX_FEATURES; i++)
         {
             featureValue[i] = 0;
         }
 
-        // Allocate power to features based on efficiency ratio
-        for (int idx = 0; idx < MAX_FEATURES; idx++)
+        // Precompute satisfaction contribution per unit for each feature
+        double satPerUnit[MAX_FEATURES];
+        
+        for (int i = 0; i < MAX_FEATURES; i++)
         {
-            int i = sortedFeatures[idx];
-
-            // Calculate current power usage
-            double currentPower = 0;
-            for (int f = 0; f < MAX_FEATURES; f++)
-            {
-                currentPower += (featurePower[f] * featureValue[f] * featureValue[f]) / 10000.0;
-                currentPower += ABS(prevFeatureValue[f] - featureValue[f]) * 0.01;
-            }
-
-            double powerAvailable = POWER_BUDGET - currentPower;
-
-            if (powerAvailable <= 0.1)
-                break;
-
-            int targetValue;
-            // Balance thresholds for maximum efficiency
-            double ratioThreshold = ratio[i];
-            int userThreshold = userCount[i];
+            double total = 0;
+            double qualityFactor = featureQuality[i] * 0.01;
+            int median = featureMedian[i];
             
-            // Optimized thresholds - balanced allocation
-            if (userThreshold > MAX_USERS * 0.56 && ratioThreshold > 2.7)
+            for (int u = 0; u < MAX_USERS; u++)
             {
-                targetValue = 100;
+                int d = userDistance[u];
+                if (d < MIN_DISTANCE) d = MIN_DISTANCE;
+                if (d > MAX_DISTANCE) d = MAX_DISTANCE;
+                int diff = (median - d);
+                if (diff < 0) diff = -diff;
+                total += qualityFactor / (diff + 1);
             }
-            else if (userThreshold > MAX_USERS * 0.48 && ratioThreshold > 1.65)
-            {
-                targetValue = 100;
-            }
-            else if (userThreshold > MAX_USERS * 0.40 && ratioThreshold > 1.16)
-            {
-                targetValue = 97;
-            }
-            else if (userThreshold > MAX_USERS * 0.32 && ratioThreshold > 0.82)
-            {
-                targetValue = 86;
-            }
-            else if (userThreshold > MAX_USERS * 0.24 && ratioThreshold > 0.50)
-            {
-                targetValue = 70;
-            }
-            else if (ratioThreshold > 0.40)
-            {
-                targetValue = 54;
-            }
-            else if (ratioThreshold > 0.30)
-            {
-                targetValue = 40;
-            }
-            else
-            {
-                targetValue = 30;
-            }
-
-            if (targetValue > 100) targetValue = 100;
-
-            // Check if targetValue fits in available power
-            double basePower = (featurePower[i] * targetValue * targetValue) / 10000.0;
-            double changePower = ABS(targetValue - prevFeatureValue[i]) * 0.01;
-            double totalPowerNeeded = basePower + changePower;
-
-            if (totalPowerNeeded > powerAvailable)
-            {
-                // Binary search for maximum feasible value
-                int low = 0, high = targetValue;
-                while (low < high)
-                {
-                    int mid = (low + high + 1) / 2;
-                    double p = (featurePower[i] * mid * mid) / 10000.0;
-                    double c = ABS(mid - prevFeatureValue[i]) * 0.01;
-                    if (p + c <= powerAvailable)
-                    {
-                        low = mid;
-                    }
-                    else
-                    {
-                        high = mid - 1;
-                    }
-                }
-                targetValue = low;
-            }
-
-            featureValue[i] = targetValue;
+            satPerUnit[i] = total;
         }
 
-        // Try to use remaining power by incrementally increasing values
-        for (int pass = 0; pass < 400; pass++)
+        // Calculate efficiency and sort
+        struct FeatureInfo {
+            int idx;
+            double efficiency;
+            double sat;
+            int power;
+        };
+        
+        struct FeatureInfo features[MAX_FEATURES];
+        
+        for (int i = 0; i < MAX_FEATURES; i++)
+        {
+            features[i].idx = i;
+            features[i].sat = satPerUnit[i];
+            features[i].power = featurePower[i];
+            // Use power^2 for efficiency since power cost is quadratic
+            features[i].efficiency = satPerUnit[i] * 10000.0 / (featurePower[i] * featurePower[i]);
+        }
+
+        // Bubble sort by efficiency
+        for (int i = 0; i < MAX_FEATURES - 1; i++)
+        {
+            for (int j = i + 1; j < MAX_FEATURES; j++)
+            {
+                if (features[i].efficiency < features[j].efficiency)
+                {
+                    struct FeatureInfo temp = features[i];
+                    features[i] = features[j];
+                    features[j] = temp;
+                }
+            }
+        }
+
+        // Allocate power based on efficiency rank
+        for (int idx = 0; idx < MAX_FEATURES; idx++)
+        {
+            int i = features[idx].idx;
+            int power = features[idx].power;
+            
+            // Calculate current power
+            double currentPower = 0;
+            for (int f = 0; f < MAX_FEATURES; f++)
+            {
+                int val = featureValue[f];
+                currentPower += (featurePower[f] * val * val) / 10000.0;
+                currentPower += ABS(prevFeatureValue[f] - val) * 0.01;
+            }
+            
+            double powerAvail = POWER_BUDGET - currentPower;
+            if (powerAvail < 0.5)
+                break;
+
+            // Target based on rank (more aggressive)
+            int target;
+            if (idx < 2) target = 100;
+            else if (idx < 4) target = 95;
+            else if (idx < 6) target = 85;
+            else if (idx < 9) target = 70;
+            else if (idx < 12) target = 55;
+            else if (idx < 15) target = 40;
+            else if (idx < 18) target = 25;
+            else target = 12;
+
+            // Binary search for max feasible value
+            int low = 0, high = target;
+            while (low < high)
+            {
+                int mid = (low + high + 1) / 2;
+                double basePower = (power * mid * mid) / 10000.0;
+                double changePower = ABS(mid - prevFeatureValue[i]) * 0.01;
+                
+                if (currentPower + basePower + changePower <= POWER_BUDGET)
+                {
+                    low = mid;
+                }
+                else
+                {
+                    high = mid - 1;
+                }
+            }
+            featureValue[i] = low;
+        }
+
+        // Simple greedy fill for remaining power (limited iterations)
+        for (int iter = 0; iter < 150; iter++)
         {
             double currentPower = 0;
             for (int f = 0; f < MAX_FEATURES; f++)
             {
-                currentPower += (featurePower[f] * featureValue[f] * featureValue[f]) / 10000.0;
-                currentPower += ABS(prevFeatureValue[f] - featureValue[f]) * 0.01;
+                int val = featureValue[f];
+                currentPower += (featurePower[f] * val * val) / 10000.0;
+                currentPower += ABS(prevFeatureValue[f] - val) * 0.01;
             }
-
-            double remainingPower = POWER_BUDGET - currentPower;
-            if (remainingPower < 0.1)
-                break;
-
-            int improved = 0;
             
-            // Try to increase best features first in early passes
-            int passType = (pass < 100) ? 0 : 1;
-
+            double remaining = POWER_BUDGET - currentPower;
+            if (remaining < 0.3)
+                break;
+            
+            int best = -1;
+            double bestGain = 0;
+            
             for (int idx = 0; idx < MAX_FEATURES; idx++)
             {
-                if (passType == 1 && idx > 4)  // In later passes, focus on best features
-                    break;
-                    
-                int i = sortedFeatures[idx];
-
+                int i = features[idx].idx;
                 if (featureValue[i] >= 100)
                     continue;
-
-                int newValue = featureValue[i] + 1;
-                double oldBasePower = (featurePower[i] * featureValue[i] * featureValue[i]) / 10000.0;
-                double newBasePower = (featurePower[i] * newValue * newValue) / 10000.0;
-                double oldChangePower = ABS(prevFeatureValue[i] - featureValue[i]) * 0.01;
-                double newChangePower = ABS(prevFeatureValue[i] - newValue) * 0.01;
-
-                double extraPower = (newBasePower - oldBasePower) + (newChangePower - oldChangePower);
-
-                if (currentPower + extraPower <= POWER_BUDGET)
+                
+                int val = featureValue[i];
+                int newVal = val + 1;
+                int power = featurePower[i];
+                
+                double baseInc = (power * newVal * newVal - power * val * val) / 10000.0;
+                double changeInc = ABS(newVal - prevFeatureValue[i]) * 0.01 - ABS(val - prevFeatureValue[i]) * 0.01;
+                double powerInc = baseInc + changeInc;
+                
+                if (currentPower + powerInc > POWER_BUDGET)
+                    continue;
+                
+                double netGain = features[idx].sat - powerInc * 0.01;
+                
+                if (netGain > bestGain)
                 {
-                    featureValue[i]++;
-                    improved = 1;
-                    break;
+                    bestGain = netGain;
+                    best = i;
                 }
             }
-
-            if (!improved)
+            
+            if (best == -1 || bestGain < 0.01)
                 break;
+            
+            featureValue[best]++;
         }
 
         screen_control(featureValue);
